@@ -14,6 +14,8 @@ function prefix(obj, namespace, type) {
   }, {});
 }
 
+// reducername => `${namespace}/${reducername}`
+// effectname => `${namespace}/${effectname}`
 export default function prefixNamespace(model) {
   const {
     namespace,
