@@ -13,6 +13,10 @@ export default function getSaga(resolve, reject, effects, model, onError, onEffe
   return function *() {
     for (const key in effects) {
       if (Object.prototype.hasOwnProperty.call(effects, key)) {
+        // 对于每一个effect ，redux-saga通过takeEvery[key]来接受dispatch。
+        // 并在接受[key]的dispatch时发起`${key}${NAMESPACE_SEP}@@start`
+        // 之后发起effect函数，
+        // 发起`${key}${NAMESPACE_SEP}@@end`
         const watcher = getWatcher(resolve, reject, key, effects[key], model, onError, onEffect);
         const task = yield sagaEffects.fork(watcher);
         yield sagaEffects.fork(function *() {
@@ -30,6 +34,8 @@ function getWatcher(resolve, reject, key, _effect, model, onError, onEffect) {
   let ms;
 
   if (Array.isArray(_effect)) {
+  // 针对effect的另一种写法，[effect, {opts}]
+  // opts.tpye可以为throttle、watcher、takeLatest、takeEvery，参考redux-saga文档https://redux-saga.js.org/
     effect = _effect[0];
     const opts = _effect[1];
     if (opts && opts.type) {
@@ -49,7 +55,7 @@ function getWatcher(resolve, reject, key, _effect, model, onError, onEffect) {
   }
 
   function *sagaWithCatch(...args) {
-    try {
+    try { 
       yield sagaEffects.put({ type: `${key}${NAMESPACE_SEP}@@start` });
       const ret = yield effect(...args.concat(createEffects(model)));
       yield sagaEffects.put({ type: `${key}${NAMESPACE_SEP}@@end` });
@@ -106,6 +112,7 @@ function createEffects(model) {
   return { ...sagaEffects, put, take };
 }
 
+// 使用onEffect
 function applyOnEffect(fns, effect, model, key) {
   for (const fn of fns) {
     effect = fn(effect, sagaEffects, model, key);

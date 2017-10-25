@@ -4,6 +4,8 @@ import invariant from 'invariant';
 import window from 'global/window';
 import { returnSelf, isArray } from './utils';
 
+// 引用redux的applyMiddleware注册sagaMiddleware、promiseMiddleware.
+// 以及使用extraEnhancers、onAction插件
 export default function ({
   reducers,
   initialState,

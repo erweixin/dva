@@ -27,4 +27,5 @@ function handleActions(handlers, defaultState) {
   return (state = defaultState, action) => reducer(state, action);
 }
 
+// 返回一个reducer，将该reducer的参数链式传递给reducers中的每一个reducer，当action.action配对时，发起对应的确定的那个reducer，其他的返回原state
 export default handleActions;

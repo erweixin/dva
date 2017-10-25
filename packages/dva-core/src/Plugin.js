@@ -12,6 +12,7 @@ const hooks = [
   'extraEnhancers',
 ];
 
+// 筛选掉hooks中没有的plugin
 export function filterHooks(obj) {
   return Object.keys(obj).reduce((memo, key) => {
     if (hooks.indexOf(key) > -1) {
@@ -29,6 +30,12 @@ export default class Plugin {
     }, {});
   }
 
+  // plugin[key]
+  // if (key === 'extraEnhancers') {
+  //   hooks[key] = plugin[key];
+  // } else {
+  //   hooks[key].push(plugin[key]);
+  // }
   use(plugin) {
     invariant(isPlainObject(plugin), 'plugin.use: plugin should be plain object');
     const hooks = this.hooks;
@@ -44,6 +51,12 @@ export default class Plugin {
     }
   }
 
+  // 返回一个函数，将该函数的参数传递给hooks[key],hooks[key]不为空时
+  //    for (const fn of hooks[key]) {
+  //       fn(...args);
+  //    }
+  // hooks[key]为空时
+  // defaultHandler(...args);
   apply(key, defaultHandler) {
     const hooks = this.hooks;
     const validApplyHooks = ['onError', 'onHmr'];
@@ -74,6 +87,15 @@ export default class Plugin {
   }
 }
 
+// hook[extraReducers]存储格式为
+// [
+//   {
+//     form: formReducer
+//   },
+//   {
+//     text: textReducer
+//   }
+// ]
 function getExtraReducers(hook) {
   let ret = {};
   for (const reducerObj of hook) {
@@ -82,6 +104,19 @@ function getExtraReducers(hook) {
   return ret;
 }
 
+// hook[onReducer]存储格式为
+// [
+//    reducer => {
+//      return (state, action) => {
+//       ...
+//      }
+//    },
+//    reducer => {
+//      return (state, action) => {
+//       ...
+//      }
+//    },
+// ]
 function getOnReducer(hook) {
   return function (reducer) {
     for (const reducerEnhancer of hook) {
