@@ -1,6 +1,7 @@
 import { asyncComponent } from 'react-async-component';
 
 const cached = {};
+// 注册未注册过的model
 function registerModel(app, model) {
   if (!cached[model.namespace]) {
     app.model(model);

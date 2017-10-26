@@ -52,9 +52,11 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
 
   /**
    * Register model before app is started.
-   *
+   * 
    * @param m {Object} model to register
    */
+
+   // 将modal经过prefixNamespace处理后传入app._models数组
   function model(m) {
     if (process.env.NODE_ENV !== 'production') {
       checkModel(m, app._models);

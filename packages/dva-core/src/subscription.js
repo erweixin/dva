@@ -2,6 +2,8 @@ import warning from 'warning';
 import { isFunction } from './utils';
 import prefixedDispatch from './prefixedDispatch';
 
+// 循环subscription中的每一个函数，如果返回unlistener函数，则传入funcs数组中。用与unlisten时使用
+// 如果未返回unlistener函数，则传入unfuncs数组。
 export function run(subs, model, app, onError) {
   const funcs = [];
   const nonFuncs = [];
@@ -22,6 +24,7 @@ export function run(subs, model, app, onError) {
   return { funcs, nonFuncs };
 }
 
+// 运行对应的unlistener函数，删除unlisteners对应命名空间的属性
 export function unlisten(unlisteners, namespace) {
   if (!unlisteners[namespace]) return;
 
