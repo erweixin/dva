@@ -31,6 +31,7 @@ export default function ({
   ]);
 
   let devtools = () => noop => noop;
+  // 引入redux-devtools
   if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__) {
     devtools = window.__REDUX_DEVTOOLS_EXTENSION__;
   }
@@ -41,5 +42,7 @@ export default function ({
     ...extraEnhancers,
   ];
 
+  // http://cn.redux.js.org/docs/api/applyMiddleware.html
+  // http://cn.redux.js.org/docs/advanced/Middleware.html
   return createStore(reducers, initialState, compose(...enhancers));
 }
